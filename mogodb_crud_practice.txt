@@ -1,0 +1,53 @@
+mogodb_crud_practice
+
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+import java.util.Scanner;
+
+public class MongoDBLoginSystem {
+    public static void main(String[] args) {
+        // Connecting to MongoDB server
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+
+        // Creating Credentials (Optional, remove if authentication is not enabled)
+        MongoCredential credential = MongoCredential.createCredential("sampleUser", "userDB", "password".toCharArray());
+        System.out.println("Connected to MongoDB successfully!");
+
+        // Accessing the database
+        MongoDatabase database = mongoClient.getDatabase("userDB");
+
+        // Creating a collection (if it doesn't exist)
+        MongoCollection<Document> collection = database.getCollection("users");
+
+        // Inserting five user documents into MongoDB
+        collection.insertOne(new Document("id", 1).append("username", "user1").append("password", "pass1"));
+        collection.insertOne(new Document("id", 2).append("username", "user2").append("password", "pass2"));
+        collection.insertOne(new Document("id", 3).append("username", "user3").append("password", "pass3"));
+        collection.insertOne(new Document("id", 4).append("username", "user4").append("password", "pass4"));
+        collection.insertOne(new Document("id", 5).append("username", "user5").append("password", "pass5"));
+
+        System.out.println("User data inserted successfully!");
+
+        // Login system
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Username: ");
+        String inputUsername = scanner.nextLine();
+        System.out.print("Enter Password: ");
+        String inputPassword = scanner.nextLine();
+
+        // Checking credentials in the database
+        Document user = collection.find(new Document("username", inputUsername).append("password", inputPassword)).first();
+
+        if (user != null) {
+            System.out.println("Login Successful! Welcome to the Homepage.");
+        } else {
+            System.out.println("Invalid Username or Password! Access Denied.");
+        }
+
+        scanner.close();
+        mongoClient.close();
+    }
+}
