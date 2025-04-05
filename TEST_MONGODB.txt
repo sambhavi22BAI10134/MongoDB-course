@@ -1,0 +1,154 @@
+TEST_MONGODB
+
+
+QUESTION 1
+
+1. How do you find all documents where the field "item" is "Mochas"?
+
+db.sales.find({ item: "Mochas" })
+
+
+
+QUESTION 2
+
+2. How do you find all items who are less than 15 of price?
+
+db.sales.find({ price: { $lt: 15 } })
+
+
+
+QUESTION 3
+
+3. How do you find items who are either less than 10 or greater than 20?
+
+db.sales.find({ $or: [ { price: { $lt: 10 } }, { price: { $gt: 20 } } ] })
+
+
+
+QUESTION 4
+
+4. How do you find all documents where the quantity field exists?
+
+db.sales.find({ quantity: { $exists: true } })
+
+
+
+QUESTION 5
+
+5. How do you find all documents where the color array contains the value "white"?
+
+db.products.find({ color: "white" })
+
+
+
+QUESTION 6
+
+6. How do you update the ram of the user named "xTablet" to 24?
+
+db.products.updateOne(
+  { name: "xTablet" },  // Filter: Find the document where name is "xTablet"
+  { $set: { "spec.ram": 24 } }  // Update: Set RAM to 24GB
+)
+
+
+
+QUESTION 7
+
+7. How do you find all products and only return their 'spec' field?
+
+db.products.find({}, { _id: 0, spec: 1 })
+
+
+
+QUESTION 8
+
+8. How do you find all products and sort them by their price in descending order?
+
+db.products.find().sort({ price: -1 })
+
+
+
+QUESTION 9
+
+9. How do you find the first 2 products, skipping the first one?
+
+db.products.find().skip(1).limit(2)
+
+
+
+QUESTION 10
+
+10. How do you find all users whose name starts with the letter "S" and price should be greater of 700?
+
+db.products.find({ 
+  name: { $regex: "^S", $options: "i" }, 
+  price: { $gt: 700 }  
+})
+
+
+
+QUESTION 11
+
+11. How do you calculate the total price of all items?
+
+db.sales.aggregate([
+  {
+    $group: {
+      _id: null, 
+      totalPrice: { $sum: { $multiply: ["$price", "$quantity"] } }
+    }
+  }
+])
+
+
+
+QUESTION 12
+
+12.How do you project only the size field for each items?
+
+db.sales.find({}, { _id: 0, size: 1 })
+
+
+
+QUESTION 13
+
+13. How do you find items who are Tall size &  group them by item wise?
+
+db.sales.aggregate([
+  {
+    $match: { size: "Tall" } 
+  },
+  {
+    $group: {
+      _id: "$item",            
+    
+    }
+  }
+])
+
+
+
+
+QUESTION 14
+
+14. How do you find the second item when sorted by price in ascending order?
+
+db.sales.find().sort({ price: 1 }).skip(1).limit(1)
+
+
+
+QUESTION 15
+
+15. How do you group by items and calculate the total number of items and average price in a single aggregation?
+
+db.sales.aggregate([
+  {
+    $group: {
+      _id: "$item",  
+      totalQuantity: { $sum: "$quantity" },  
+      avgPrice: { $avg: "$price" }  
+    }
+  }
+])
+
+
